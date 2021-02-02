@@ -4,7 +4,7 @@
 /// \author     Georgii Zhulikov
 /// \author     Sergey Shershakov
 /// \version    0.1.0
-/// \date       25.01.2021
+/// \date       01.02.2021
 ///             This code is for educational purposes of the course "Introduction
 ///             to programming" provided by the Faculty of Computer Science
 ///             at the Higher School of Economics.
@@ -32,26 +32,57 @@ using std::string;
 using std::stringstream;
 
 // TODO: Provide a declaration (a prototype) of the method calcSumFromStream() here.
+double calcSumFromStream(std::istream& inputStream);
 
 
 // TODO: Provide a definition of the method sumLines() here.
-
-
+void sumLines(std::istream& in, std::ostream& out)
+{
+    while(in.good() && !in.eof())
+    {
+        double lineSum = calcSumFromStream(in);
+        if (!in.good())
+        {
+            return;
+        }
+        out << lineSum << "\n";
+    }
+}
 
 int main()
 {
     using std::cout;
     using std::cin;
+    
+    // Change "/" in path to "\\" if you are using Windows
+    std::ifstream inputFile("../../data/problem1_files/inp.txt");
+    std::ofstream outputFile("../../data/problem1_files/out.txt");
+    
+    cout << "Workshop 7 Example 1\n\n";
 
-    cout << "Workshop 6 Example 3\n\n";
-
-
-    // TODO: Implement the main method here.
-
+    sumLines(inputFile, outputFile);
 
     cout << "\n\n";
+    inputFile.close();
+    outputFile.close();
 
     return 0;
 }
 
 // TODO: Implement calcSumFromStream() method here.
+double calcSumFromStream(std::istream& inputStream)
+{
+    std::string buffer;
+    std::getline(inputStream, buffer, '\n');
+    std::stringstream ss(buffer);
+    
+    double sum = 0;
+    while(ss.good() && !ss.eof())
+    {
+        double a;
+        ss >> a;
+        sum += a;
+    }
+    return sum;
+}
+

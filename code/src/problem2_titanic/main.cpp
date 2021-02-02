@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 /// \file
-/// \brief      Main module for Problem 1: Titanic.
+/// \brief      Main module for Problem 2: Titanic.
 /// \author     Georgii Zhulikov
 /// \author     Sergey Shershakov
 /// \version    0.1.0
@@ -83,11 +83,80 @@
 #include <algorithm>
 
 
+typedef std::vector<std::string> VecStrings;
+
+void printVec(const VecStrings& vecStrings)
+{
+    int i = 1;
+    for(const std::string& str : vecStrings)
+    {
+        std::cout << i << ") " << str << std::endl;
+        ++i;
+    }
+}
+
+std::string convertName(std::string fullname)
+{
+    std::string surname;
+    std::stringstream ss(fullname);
+    std::getline(ss, surname, ';');
+    return surname;
+}
+
+void extractData(std::istream& in, std::string& surname, bool& survived)
+{
+    std::string buffer;
+    
+    std::getline(in, buffer, ','); // passengerID
+    std::getline(in, buffer, ','); // survived
+    
+    if (buffer == "1")
+    {
+        survived = true;
+    }
+    else
+    {
+        survived = false;
+    }
+    
+    std::getline(in, buffer, ','); // pclass
+    std::getline(in, buffer, ','); // full name
+    surname = convertName(buffer);
+}
+
+
+VecStrings toCountSurvived(std::istream& in)
+{
+    VecStrings survivorNames;
+    std::string buffer;
+    while(in.good())
+    {
+        std::getline(in, buffer);
+        if (!in.good())
+        {
+            break;
+        }
+        std::stringstream lineStream(buffer);
+        bool survived;
+        std::string surname;
+        extractData(lineStream, surname, survived);
+        if (survived)
+        {
+            survivorNames.push_back(surname);
+        }
+    }
+    return survivorNames;
+}
+
 
 int main ()
 {
+    // Change "/" in path to "\\" if you are using Windows
     const std::string INP_FILE_NAME = "../../data/problem2_titanic/titanic.csv";
-    std::ifstream input_file;
-    input_file.open(INP_FILE_NAME);
+    std::ifstream inputFile;
+    inputFile.open(INP_FILE_NAME);
+    
+    VecStrings vecNames = toCountSurvived(inputFile);
+    printVec(vecNames);
 
 }
